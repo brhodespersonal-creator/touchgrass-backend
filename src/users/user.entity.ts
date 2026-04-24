@@ -29,7 +29,7 @@ export class User {
   @Column({ type: 'float', default: 0 })
   waterIntake: number;
 
-  @Column({ default: 0 })
+  @Column({ type: 'float', default: 0 })
   proteinIntake: number;
 
   @Column({ type: 'date', nullable: true })
