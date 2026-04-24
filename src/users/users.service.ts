@@ -83,6 +83,19 @@ export class UsersService {
         return this.sendFriendRequest(senderId, receiver.id);
     }
 
+    async getSentFriendRequests(userId: string) {
+        const requests = await this.friendRequestRepository.find({
+            where: { senderId: userId, status: 'pending' },
+            relations: ['receiver'],
+        });
+        return requests.map(r => ({
+            id: r.id,
+            receiverId: r.receiverId,
+            receiverUsername: r.receiver?.username,
+            createdAt: r.createdAt,
+        }));
+    }
+
     async getFriendRequests(userId: string) {
         const requests = await this.friendRequestRepository.find({
             where: { receiverId: userId, status: 'pending' },
@@ -140,6 +153,13 @@ export class UsersService {
 
         request.status = 'rejected';
         return this.friendRequestRepository.save(request);
+    }
+
+    async deleteAccount(userId: string) {
+        const user = await this.usersRepository.findOne({ where: { id: userId } });
+        if (!user) throw new NotFoundException('User not found');
+        await this.usersRepository.remove(user);
+        return { message: 'Account deleted' };
     }
 
     async getFriends(userId: string) {

@@ -214,6 +214,15 @@ export class HabitsService {
         };
     }
 
+    async deleteAllHabits(userId: string) {
+        const habits = await this.habitsRepository.find({
+            where: { user: { id: userId } },
+            relations: ['user'],
+        });
+        await this.habitsRepository.remove(habits);
+        return { message: `${habits.length} habits deleted` };
+    }
+
     async getLeaderboard() {
         const users = await this.usersRepository.find({
             select: ['id', 'username', 'xp'],

@@ -51,6 +51,12 @@ export class HabitsController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Delete('all')
+    deleteAllHabits(@Req() req) {
+        return this.habitsService.deleteAllHabits(req.user.userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Get('leaderboard')
     getLeaderboard() {
         return this.habitsService.getLeaderboard();

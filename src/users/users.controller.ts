@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Post, Body, Get, UseGuards, Req, Param, Patch, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, UseGuards, Req, Param, Patch, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -13,7 +13,6 @@ export class UsersController {
     return req.user;
   }
 
-  // Full stats for the logged-in user (used by dashboard)
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async getMe(@Req() req) {
@@ -21,6 +20,18 @@ export class UsersController {
     if (!user) throw new NotFoundException('User not found');
     const { password, ...safe } = user;
     return safe;
+  }
+
+  @Delete('me')
+  @UseGuards(JwtAuthGuard)
+  deleteAccount(@Req() req) {
+    return this.usersService.deleteAccount(req.user.userId);
+  }
+
+  @Get('friend-requests/sent')
+  @UseGuards(JwtAuthGuard)
+  getSentFriendRequests(@Req() req) {
+    return this.usersService.getSentFriendRequests(req.user.userId);
   }
 
   @Get('friend-requests')
