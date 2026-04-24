@@ -28,7 +28,6 @@ export class HabitsController {
         return this.habitsService.getUserHabits(req.user.userId);
     }
 
-    // Returns ALL habits (not filtered by today) with full completion history — used by calendar
     @UseGuards(JwtAuthGuard)
     @Get('all')
     getAllHabits(@Req() req) {
@@ -44,16 +43,17 @@ export class HabitsController {
         return this.habitsService.completeHabit(req.user.userId, body.habitId);
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Delete(':id')
-    deleteHabit(@Req() req, @Param('id') id: string) {
-        return this.habitsService.deleteHabit(req.user.userId, id);
-    }
-
+    // IMPORTANT: 'all' must be defined before ':id' so NestJS doesn't match 'all' as an ID
     @UseGuards(JwtAuthGuard)
     @Delete('all')
     deleteAllHabits(@Req() req) {
         return this.habitsService.deleteAllHabits(req.user.userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id')
+    deleteHabit(@Req() req, @Param('id') id: string) {
+        return this.habitsService.deleteHabit(req.user.userId, id);
     }
 
     @UseGuards(JwtAuthGuard)
